@@ -4,10 +4,10 @@ metadata:
   name: mocf-mock-pod
   labels:
     app: mocf-mock-pod
-  namespace: mocf-mock-pod
+  namespace: mocf-dummy
 spec:
   containers:
     - name: mocf-pod
-      image: rhcpranava/mocf-api:100k
+      image: docker.io/rhcpranava/mocf-api:100k
       ports:
        - containerPort: 4505 
