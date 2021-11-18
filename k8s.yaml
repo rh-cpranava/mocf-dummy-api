@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mocf-mock-pod
+  labels:
+    app: mocf-mock-pod
+  namespace: mocf-mock-pod
+spec:
+  containers:
+    - name: mocf-pod
+      image: rhcpranava/mocf-api:100k
+      ports:
+       - containerPort: 4505 
