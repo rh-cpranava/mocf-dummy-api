@@ -8,6 +8,6 @@ metadata:
 spec:
   containers:
     - name: mocf-pod
-      image: docker.io/rhcpranava/mocf-api:100k
+      image: docker.io/rhcpranava/mocf-api:10m
       ports:
        - containerPort: 4505 
