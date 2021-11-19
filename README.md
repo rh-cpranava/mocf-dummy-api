@@ -20,6 +20,8 @@ oc expose svc/mocf-mock-pod -n mocf-dummy
 
 ## Usage
 Endpoints are as follows:
+- /api/10k
+- /api/1m
 - /api/64k
 - /api/50k
 - /api/40k
