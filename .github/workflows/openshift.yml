@@ -63,5 +63,5 @@ jobs:
       # You may pin to the exact commit or the version.
       # uses: okteto/apply@4e27118456f347c5ef86dac30476118540dd5581
       run: |
-        ls
+        oc apply -f k8s.yaml
       
