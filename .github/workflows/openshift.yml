@@ -38,6 +38,7 @@ env:
   GITHUB_USER: rhcpranava
   REGISTRY: docker.io
   IMAGE_NAME: mocf-api
+  DOCKER_TAG: 10g
 
 on:
   # https://docs.github.com/en/actions/reference/events-that-trigger-workflows
@@ -87,7 +88,7 @@ jobs:
       uses: redhat-actions/push-to-registry@v2
       with:
         image: ${{ steps.build-image.outputs.image }}
-        tags: ${{ steps.build-image.outputs.tags }}
+        tags: ${{ env.DOCKER_TAG }}
         registry: ${{ env.REGISTRY }} 
         username: ${{ env.GITHUB_USER }} 
         password: ${{ env.DOCKER_SECRET }} 
@@ -96,5 +97,5 @@ jobs:
       uses: redhat-actions/oc-new-app@v1
       with:
         app_name: mocf-build-from-scratch
-        image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.build-image.outputs.tags }}
+        image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.DOCKER_TAG }}
         namespace: mocf-dummy
