@@ -15,6 +15,7 @@ env:
   REGISTRY: quay.io/cpranava0
   IMAGE_NAME: mocf-api
   DOCKER_TAG: 10g
+  APP_PORT: 4505
 
 on:
   # https://docs.github.com/en/actions/reference/events-that-trigger-workflows
@@ -75,3 +76,4 @@ jobs:
         app_name: mocf-build-from-scratch
         image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.DOCKER_TAG }}
         namespace: mocf-dummy
+        port: ${{ env.APP_PORT }}
