@@ -76,4 +76,3 @@ jobs:
         app_name: mocf-build-from-scratch
         image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.DOCKER_TAG }}
         namespace: mocf-dummy
-        port: ${{ env.APP_PORT }}
