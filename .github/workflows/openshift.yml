@@ -81,13 +81,6 @@ jobs:
         tags: latest ${{ github.sha }}
         containerfiles: |
           ./Dockerfile
-          
-    - name: Log in to the GitHub Container registry
-      uses: redhat-actions/podman-login@v1
-      with:
-        registry: ${{ env.REGISTRY }}
-        username: ${{ env.GITHUB_USER }}
-        password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Push to GitHub Container Repository
       id: push-to-docker-io
