@@ -35,8 +35,8 @@ env:
   # 🖊️ EDIT to set the kube context's namespace after login. Leave blank to use your user's default namespace.
   OPENSHIFT_NAMESPACE: ""
   DOCKER_SECRET: ${{ secrets.DOCKER_SECRET }}
-  GITHUB_USER: rhcpranava
-  REGISTRY: docker.io
+  GITHUB_USER: cpranava0+githubsa
+  REGISTRY: quay.io
   IMAGE_NAME: mocf-api
   DOCKER_TAG: 10g
 
