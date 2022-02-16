@@ -79,7 +79,7 @@ jobs:
       uses: redhat-actions/buildah-build@v2
       with:
         image: ${{ env.IMAGE_NAME }}
-        tags: latest ${{ github.sha }}
+        tags: ${{ env.DOCKER_TAG }}
         containerfiles: |
           ./Dockerfile
 
