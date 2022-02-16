@@ -34,6 +34,10 @@ env:
   OPENSHIFT_TOKEN: ${{ secrets.OPENSHIFT_TOKEN }}
   # 🖊️ EDIT to set the kube context's namespace after login. Leave blank to use your user's default namespace.
   OPENSHIFT_NAMESPACE: ""
+  DOCKER_SECRET: ${{ secrets.DOCKER_SECRET }}
+  GITHUB_USER: rhcpranava
+  REGISTRY: docker.io
+  IMAGE_NAME: mocf-api
 
 on:
   # https://docs.github.com/en/actions/reference/events-that-trigger-workflows
@@ -44,13 +48,13 @@ on:
 jobs:
   openshift-ci-cd:
     name: Build and deploy to OpenShift
-    # ubuntu-20.04 can also be used.
     runs-on: self-hosted
     environment: test
 
     steps:
+    
     - uses: actions/checkout@v1
-    # https://github.com/redhat-actions/oc-login#readme
+    
     - name: Log in to OpenShift
       uses: redhat-actions/oc-login@v1
       with:
@@ -58,10 +62,44 @@ jobs:
         openshift_token: ${{ env.OPENSHIFT_TOKEN }}
         insecure_skip_tls_verify: true
         namespace: ${{ env.OPENSHIFT_NAMESPACE }}
-
-    - name: Kubectl Apply
+    
+    ############# TEMPLATE #############
+    ############# Use oc template to deploy Application to OCP
+    - name: OC Apply
       # You may pin to the exact commit or the version.
       # uses: okteto/apply@4e27118456f347c5ef86dac30476118540dd5581
       run: |
         oc apply -f k8s.yaml
-      
+     
+    ############# BUILD AND DEPLOY #############
+    ############# Use buildah to build container
+    - name: Buildah Action
+      id: build-image
+      uses: redhat-actions/buildah-build@v2
+      with:
+        image: ${{ env.IMAGE_NAME }}
+        tags: latest ${{ github.sha }}
+        containerfiles: |
+          ./Dockerfile
+          
+    - name: Log in to the GitHub Container registry
+      uses: redhat-actions/podman-login@v1
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ env.GITHUB_USER }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Push to GitHub Container Repository
+      id: push-to-docker-io
+      uses: redhat-actions/push-to-registry@v2
+      with:
+        image: ${{ steps.build-image.outputs.image }}
+        tags: ${{ steps.build-image.outputs.tags }}
+        registry: ${{ env.REGISTRY }} 
+        
+    - name: Create and expose app
+      uses: redhat-actions/oc-new-app@v1
+      with:
+        app_name: mocf-build-from-scratch
+        image: ${{ steps.build-image.outputs.image }}:${{ steps.build-image.outputs.tags }}
+        namespace: mocf-dummy
