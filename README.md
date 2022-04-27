@@ -1,4 +1,4 @@
-# Usage
+# Usage for OpenShift
 
 ## Docker registry location:
 - https://hub.docker.com/repository/docker/rhcpranava/mocf-api
