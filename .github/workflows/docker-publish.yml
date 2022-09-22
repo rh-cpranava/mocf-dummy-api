@@ -24,7 +24,8 @@ env:
   DEV_NAMESPACE: mocf-api-dev
   NP_NAMESPACE: mocf-api-np
   PROD_NAMESPACE: mocf-api-prod
-  
+  OPENSHIFT_SERVER: https://api.cluster-p755q.p755q.sandbox854.opentlc.com:6443
+
 jobs:
   build_push:
     name: Build and Push to Container Registry
@@ -67,6 +68,7 @@ jobs:
     name: Deploy to Dev OpenShift
     runs-on: 'ubuntu-latest'
     needs: build_push
+    environment: production
     steps:
      - name: Checkout repository
        uses: actions/checkout@v3
