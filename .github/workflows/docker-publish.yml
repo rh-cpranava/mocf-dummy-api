@@ -91,4 +91,7 @@ jobs:
          release: dev
          value-files: "./environments/values.dev.yaml"
          values: |
-           imageName: '${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.build_push.outputs.release_tag }}'
+          image:
+            repo: ${{ env.REGISTRY }}
+            name: ${{ env.IMAGE_NAME }}
+            tag: ${{ needs.build_push.outputs.release_tag }}
