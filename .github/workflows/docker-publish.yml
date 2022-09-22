@@ -82,12 +82,12 @@ jobs:
          insecure_skip_tls_verify: true
          namespace: ${{ env.OPENSHIFT_NAMESPACE }}
 
-     - name: Deploy
+     - name: Deploy in Development Environment
        uses: 'vimeda/helm@v1.6.8'
        with:
          chart: 'mocf-api'
          namespace: ${{ env.DEV_NAMESPACE }}
-         release: ${{ needs.build_push.outputs.release_tag }}
+         release: dev
          value-files: "./environments/values.dev.yaml"
          values: |
            imageName: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.build_push.outputs.release_tag }}
