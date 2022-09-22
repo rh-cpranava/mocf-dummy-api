@@ -4,4 +4,4 @@ metadata:
   name: {{ .Values.name }}-cm
   namespace: {{ .Values.namespace }}
 data:
-{{ printf "environments/configmap.%s.yaml" .Values.namespace | .Files.Get | indent 2 }}
+  cmData: {{ .Values.cm }}
