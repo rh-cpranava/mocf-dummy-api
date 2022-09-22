@@ -1,4 +1,4 @@
-name: Docker
+name: OpenShift Application Deployment
 
 # This workflow uses actions that are not certified by GitHub.
 # They are provided by a third-party and are governed by
@@ -16,29 +16,20 @@ on:
     branches: [ "main" ]
 
 env:
-  # Use docker.io for Docker Hub if empty
   REGISTRY: quay.io
-  # github.repository as <account>/<repo>
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME: cpranava0/mocf-api
   DOCKER_FILE_LOCATION: ./Dockerfile
-
+  DOCKER_SECRET: ${{ secrets.QUAY_TOKEN }} 
+  DOCKER_USER: cpranava0+githubsa
+  
 jobs:
-  build:
+  build_push:
+    name: Build and Push to Container Registry
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
-      # Login against a Docker registry except on PR
-      # https://github.com/docker/login-action
-      - name: Log into registry ${{ env.REGISTRY }}
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@28218f9b04b4f3f62068d7b6ce6ca5b26e35336c
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: cpranava0+githubsa
-          password: ${{ secrets.QUAY_TOKEN }}
-
+        
       # Extract metadata (tags, labels) for Docker
       # https://github.com/docker/metadata-action
       - name: Extract Docker metadata
@@ -66,5 +57,5 @@ jobs:
           image: ${{ steps.build-image.outputs.image }}
           tags: ${{ steps.meta.outputs.tags }}
           registry: ${{ env.REGISTRY }} 
-          username: ${{ env.GITHUB_USER }} 
+          username: ${{ env.DOCKER_USER }} 
           password: ${{ env.DOCKER_SECRET }} 
