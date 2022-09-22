@@ -69,7 +69,7 @@ jobs:
     needs: build_push
     steps:
       - name: 'Deploy'
-        uses: 'deliverybot/helm@v1'
+        uses: 'vimeda/helm@v1.6.8'
         with:
           chart: 'mocf-api'
           namespace: ${{ env.DEV_NAMESPACE }}
