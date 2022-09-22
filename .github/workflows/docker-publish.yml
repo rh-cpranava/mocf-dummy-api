@@ -85,7 +85,7 @@ jobs:
      - name: Deploy in Development Environment
        uses: 'vimeda/helm@v1.6.8'
        with:
-         chart: 'mocf-api'
+         chart: "app"
          namespace: ${{ env.DEV_NAMESPACE }}
          release: dev
          value-files: "./environments/values.dev.yaml"
