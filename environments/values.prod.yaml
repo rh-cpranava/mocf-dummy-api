@@ -1,3 +1,2 @@
 namespace: mocf-api-prod
-imageName: mocf-api
 name: mocf-api
