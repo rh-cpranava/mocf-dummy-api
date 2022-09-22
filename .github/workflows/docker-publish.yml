@@ -86,7 +86,6 @@ jobs:
        uses: 'vimeda/helm@v1.6.8'
        with:
          chart: "app"
-         helm: helm3
          namespace: ${{ env.DEV_NAMESPACE }}
          version: '${{ github.sha }}'
          release: dev
@@ -96,3 +95,4 @@ jobs:
             repo: ${{ env.REGISTRY }}
             name: ${{ env.IMAGE_NAME }}
             tag: ${{ needs.build_push.outputs.release_tag }}
+         helm: helm3
