@@ -21,17 +21,22 @@ env:
   DOCKER_FILE_LOCATION: ./Dockerfile
   DOCKER_SECRET: ${{ secrets.QUAY_TOKEN }} 
   DOCKER_USER: cpranava0+githubsa
-  
+  DEV_NAMESPACE: mocf-api-dev
+  NP_NAMESPACE: mocf-api-np
+  PROD_NAMESPACE: mocf-api-prod
+  OPENSHIFT_SERVER: https://api.cluster-p755q.p755q.sandbox854.opentlc.com:6443
+  OPENSHIFT_TOKEN: ${{ secrets.OPENSHIFT_TOKEN }}
+
 jobs:
   build_push:
     name: Build and Push to Container Registry
     runs-on: ubuntu-20.04
+    outputs:
+       release_tag: ${{ steps.meta.outputs.tags }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-        
-      # Extract metadata (tags, labels) for Docker
-      # https://github.com/docker/metadata-action
+
       - name: Extract Docker metadata
         id: meta
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
@@ -58,4 +63,31 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           registry: ${{ env.REGISTRY }} 
           username: ${{ env.DOCKER_USER }} 
-          password: ${{ env.DOCKER_SECRET }} 
+          password: ${{ env.DOCKER_SECRET }}
+          
+  deploy_openshift:
+    name: Deploy to Dev OpenShift
+    runs-on: 'ubuntu-latest'
+    needs: build_push
+    environment: production
+    steps:
+     - name: Checkout repository
+       uses: actions/checkout@v3
+
+     - name: Log in to OpenShift
+       uses: redhat-actions/oc-login@v1
+       with:
+         openshift_server_url: ${{ env.OPENSHIFT_SERVER }}
+         openshift_token: ${{ env.OPENSHIFT_TOKEN }}
+         insecure_skip_tls_verify: true
+         namespace: ${{ env.OPENSHIFT_NAMESPACE }}
+
+     - name: Deploy
+       uses: 'vimeda/helm@v1.6.8'
+       with:
+         chart: 'mocf-api'
+         namespace: ${{ env.DEV_NAMESPACE }}
+         release: ${{ needs.build_push.outputs.release_tag }}
+         value-files: "./environments/values.dev.yaml"
+         values: |
+           imageName: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.build_push.outputs.release_tag }}
