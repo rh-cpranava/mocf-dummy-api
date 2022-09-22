@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.name }}
+  template:
+    metadata:
+      annotations:
+        checksum/configmap: {{ printf "environments/configmap.%s.yaml" .Values.namespace | .Files.Get | sha256sum }}
+        checksum/secrets: {{ printf "environments/secrets.%s.yaml" .Values.namespace | .Files.Get | sha256sum }}
+      labels:
+        app: {{ .Values.name }}
+    spec:
+      containers:
+        - name: mocf-pod
+          image: {{ .Values.imageName }}
+          ports:
+          - containerPort: 4505 
