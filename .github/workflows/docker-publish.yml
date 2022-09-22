@@ -87,6 +87,7 @@ jobs:
        with:
          chart: "app"
          namespace: ${{ env.DEV_NAMESPACE }}
+         version: '${{ github.sha }}'
          release: dev
          value-files: "./environments/values.dev.yaml"
          values: |
