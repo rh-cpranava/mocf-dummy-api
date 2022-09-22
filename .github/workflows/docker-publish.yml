@@ -69,7 +69,7 @@ jobs:
     needs: build_push
     steps:
       - name: 'Deploy'
-        uses: 'deliverybot/helm@master'
+        uses: 'deliverybot/helm@v1'
         with:
           chart: 'mocf-api'
           namespace: ${{ env.DEV_NAMESPACE }}
