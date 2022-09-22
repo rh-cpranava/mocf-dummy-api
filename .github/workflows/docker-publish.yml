@@ -25,6 +25,7 @@ env:
   NP_NAMESPACE: mocf-api-np
   PROD_NAMESPACE: mocf-api-prod
   OPENSHIFT_SERVER: https://api.cluster-p755q.p755q.sandbox854.opentlc.com:6443
+  OPENSHIFT_TOKEN: ${{ secrets.OPENSHIFT_TOKEN }}
 
 jobs:
   build_push:
