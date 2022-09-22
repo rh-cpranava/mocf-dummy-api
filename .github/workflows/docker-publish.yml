@@ -82,16 +82,6 @@ jobs:
          insecure_skip_tls_verify: true
          namespace: ${{ env.OPENSHIFT_NAMESPACE }}
 
-     - name: Deploy in Development Environment
-       uses: 'vimeda/helm@v1.6.8'
-       with:
-         chart: "app"
-         namespace: ${{ env.DEV_NAMESPACE }}
-         version: '${{ github.sha }}'
-         release: dev
-         value-files: "./environments/values.dev.yaml"
-         values: |
-          image:
-            repo: ${{ env.REGISTRY }}
-            name: ${{ env.IMAGE_NAME }}
-            tag: ${{ needs.build_push.outputs.release_tag }}
+     - name: helm install
+       shell: bash
+       run: helm upgrade --install --create-namespace -n ${{ DEV_NAMESPACE }} -f environments/values.dev.yaml --set .Values.imageName="${{ needs.build_push.outputs.release_tag }}" ${{ github.sha }} mocf-api

@@ -4,4 +4,4 @@ metadata:
   name: {{ .Values.name }}-cm
   namespace: {{ .Values.namespace }}
 data:
-  cmData: {{ .Values.cm }}
+  cmData: {{ .Values.cmData }}
