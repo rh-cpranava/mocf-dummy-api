@@ -84,4 +84,4 @@ jobs:
 
      - name: helm install
        shell: bash
-       run: helm upgrade --install --create-namespace -n ${{ env.DEV_NAMESPACE }} -f environments/values.dev.yaml --set=Values.cmData=${{ secrets.CM_DATA }},Values.cmSecret=${{ secrets.CM_SECRET }},Values.imageName=${{ needs.build_push.outputs.release_tag }} ${{ github.sha }} mocf-api
+       run: helm upgrade --install --create-namespace -n ${{ env.DEV_NAMESPACE }} -f environments/values.dev.yaml --set=Values.cmData="${{ secrets.CM_DATA }}",Values.cmSecret="${{ secrets.CM_SECRET }}",Values.imageName=${{ needs.build_push.outputs.release_tag }} development mocf-api
