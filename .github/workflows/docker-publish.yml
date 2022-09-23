@@ -65,11 +65,11 @@ jobs:
           username: ${{ env.DOCKER_USER }} 
           password: ${{ env.DOCKER_SECRET }}
           
-  deploy_openshift:
+  deploy_openshift_dev:
     name: Deploy to Dev OpenShift
     runs-on: 'ubuntu-latest'
     needs: build_push
-    environment: production
+    environment: development
     steps:
      - name: Checkout repository
        uses: actions/checkout@v3
@@ -85,3 +85,45 @@ jobs:
      - name: helm install
        shell: bash
        run: helm upgrade --install --create-namespace -n ${{ env.DEV_NAMESPACE }} -f environments/values.dev.yaml --set=cmData="${{ secrets.CM_DATA }}",cmSecret="${{ secrets.CM_SECRET }}",imageName=${{ needs.build_push.outputs.release_tag }} development .
+
+deploy_openshift_np:
+    name: Deploy to NonProd OpenShift
+    runs-on: 'ubuntu-latest'
+    needs: deploy_openshift_dev
+    environment: nonprod
+    steps:
+     - name: Checkout repository
+       uses: actions/checkout@v3
+
+     - name: Log in to OpenShift
+       uses: redhat-actions/oc-login@v1
+       with:
+         openshift_server_url: ${{ env.OPENSHIFT_SERVER }}
+         openshift_token: ${{ env.OPENSHIFT_TOKEN }}
+         insecure_skip_tls_verify: true
+         namespace: ${{ env.OPENSHIFT_NAMESPACE }}
+
+     - name: helm install
+       shell: bash
+       run: helm upgrade --install --create-namespace -n ${{ env.NP_NAMESPACE }} -f environments/values.nonprod.yaml --set=cmData="${{ secrets.CM_DATA }}",cmSecret="${{ secrets.CM_SECRET }}",imageName=${{ needs.build_push.outputs.release_tag }} nonprod .
+
+deploy_openshift_prod:
+    name: Deploy to prod OpenShift
+    runs-on: 'ubuntu-latest'
+    needs: deploy_openshift_np
+    environment: production
+    steps:
+     - name: Checkout repository
+       uses: actions/checkout@v3
+
+     - name: Log in to OpenShift
+       uses: redhat-actions/oc-login@v1
+       with:
+         openshift_server_url: ${{ env.OPENSHIFT_SERVER }}
+         openshift_token: ${{ env.OPENSHIFT_TOKEN }}
+         insecure_skip_tls_verify: true
+         namespace: ${{ env.OPENSHIFT_NAMESPACE }}
+
+     - name: helm install
+       shell: bash
+       run: helm upgrade --install --create-namespace -n ${{ env.PROD_NAMESPACE }} -f environments/values.prod.yaml --set=cmData="${{ secrets.CM_DATA }}",cmSecret="${{ secrets.CM_SECRET }}",imageName=${{ needs.build_push.outputs.release_tag }} production .
